@@ -1,5 +1,6 @@
 import sys
 from typing import List, Dict, Optional, NewType, Any, Union
+
 try:
     from typing import TypeGuard
 except ImportError:
@@ -95,6 +96,7 @@ CodeActionKind = Literal[
     "refactor.extract",
     "refactor.inline",
     "refactor.rewrite",
+    "refactor.move",
     "source",
     "source.organizeImports",
     "source.fixAll",

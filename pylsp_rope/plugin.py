@@ -137,6 +137,11 @@ def pylsp_code_actions(
                 document_uri=document.uri,
                 position=info.position,
             ),
+            "Move": refactoring.CommandRefactorMove(
+                workspace,
+                document_uri=document.uri,
+                position=info.position,
+            ),
         }
     )
     commands.update(
