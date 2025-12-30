@@ -11,6 +11,7 @@ from rope.refactor import (
     importutils,
     introduce_parameter,
 )
+from rope.refactor.move import create_move
 
 from pylsp_rope import typing, commands
 from pylsp_rope.project import (
@@ -372,6 +373,62 @@ class CommandIntroduceParameter(Command):
             new_parameter="new_parameter",
         )
         return rope_changeset
+
+
+class CommandRefactorMove(Command):
+    name = commands.COMMAND_REFACTOR_MOVE
+    kind: CodeActionKind = "refactor.move"
+
+    document_uri: DocumentUri
+    position: typing.Position
+
+    def validate(self, info):
+        # Check if position is on a movable element
+        current_document = info.current_document
+        resource = info.resource
+
+        # Try to create move refactoring to validate it's possible
+        try:
+            move_refactoring = create_move(
+                project=self.project,
+                resource=resource,
+                offset=current_document.offset_at_position(self.position),
+            )
+            # If we can create move object, it's a valid target
+            if move_refactoring is not None:
+                return
+        except Exception:
+            # If move creation fails, don't offer the action
+            raise Exception("Move refactoring not available at this position")
+
+    def get_changes(self):
+        current_document, resource = get_resource(self.workspace, self.document_uri)
+
+        # For now, implement a simple move that creates a new module
+        # This is a basic implementation following rope's patterns
+        try:
+            move_refactoring = create_move(
+                project=self.project,
+                resource=resource,
+                offset=current_document.offset_at_position(self.position),
+            )
+
+            # Get destination module from move object - default is to move to new module
+            rope_changeset = move_refactoring.get_changes()
+            return rope_changeset
+        except Exception as e:
+            # If move fails, provide meaningful error
+            raise Exception(f"Move operation failed: {str(e)}")
+
+    @classmethod
+    def get_code_actions(cls, workspace, document, position):
+        return {
+            "Move": cls(
+                workspace,
+                document_uri=document.uri,
+                position=position,
+            )
+        }
 
 
 class GenerateCode(Command):
