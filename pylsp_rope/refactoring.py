@@ -11,6 +11,8 @@ from rope.refactor import (
     importutils,
     introduce_parameter,
 )
+from rope.base.exceptions import RefactoringError
+from rope.refactor.move import MoveGlobal, create_move
 
 from pylsp_rope import typing, commands
 from pylsp_rope.project import (
@@ -372,6 +374,57 @@ class CommandIntroduceParameter(Command):
             new_parameter="new_parameter",
         )
         return rope_changeset
+
+
+class CommandRefactorMove(Command):
+    name = commands.COMMAND_REFACTOR_MOVE
+    kind: CodeActionKind = "refactor.move"
+
+    document_uri: DocumentUri
+    position: typing.Position
+
+    destination: str
+
+    def _prepare_move(self):
+        document, resource = get_resource(self.workspace, self.document_uri)
+        move = create_move(
+            project=self.project,
+            resource=resource,
+            offset=document.offset_at_position(self.position),
+        )
+        if not isinstance(move, MoveGlobal):
+            raise RefactoringError("Only global classes/functions/variables can be moved")
+        destinations = {
+            resource.path: resource for resource in self.project.get_python_files()
+        }
+        if self.destination not in destinations:
+            raise RefactoringError("Move destination must be a workspace Python module")
+        destination = destinations[self.destination]
+        if move.source == destination:
+            raise RefactoringError("Cannot move a symbol to its own module")
+        if move.old_name in self.project.get_pymodule(destination):
+            raise RefactoringError("Destination already defines the selected name")
+        return move, destination
+
+    def validate(self, info):
+        self._prepare_move()
+
+    def get_changes(self):
+        move, destination = self._prepare_move()
+        return move.get_changes(dest=destination)
+
+    @classmethod
+    def get_code_actions(cls, workspace, document, position):
+        project = get_project(workspace)
+        return {
+            f"Move to {resource.path}": cls(
+                workspace,
+                document_uri=document.uri,
+                position=position,
+                destination=resource.path,
+            )
+            for resource in sorted(project.get_python_files(), key=lambda r: r.path)
+        }
 
 
 class GenerateCode(Command):

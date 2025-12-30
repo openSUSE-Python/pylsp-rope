@@ -49,6 +49,7 @@ Code Action:
 - convert local variable to field 
 - organize imports 
 - introduce parameter 
+- move global classes/functions/variables to existing modules
 - generate variable/function/class from undefined variable 
 
 Refer to [Rope documentation](https://github.com/python-rope/rope/blob/master/docs/overview.rst)
@@ -118,6 +119,17 @@ Trigger CodeAction anywhere in a Python file to organize imports.
 
 When CodeAction is triggered and the cursor is selecting a Python variable or
 attribute, make that variable/attribute a parameter.
+
+### Move
+
+Place the cursor on a global class, function, or variable name. Choose
+`Move to <module path>` to move it to an existing Python module in the
+workspace. References and imports are updated across the project.
+
+The source module and destinations that already define the selected name
+are excluded. Moving methods or module files and creating new destination
+modules are not supported. Create the destination module before requesting
+code actions.
 
 ### Generate code
 

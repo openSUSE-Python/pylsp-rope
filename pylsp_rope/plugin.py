@@ -134,6 +134,13 @@ def pylsp_code_actions(
         }
     )
     commands.update(
+        refactoring.CommandRefactorMove.get_code_actions(
+            workspace,
+            document=document,
+            position=info.position,
+        ),
+    )
+    commands.update(
         refactoring.GenerateCode.get_code_actions(
             workspace,
             document=document,

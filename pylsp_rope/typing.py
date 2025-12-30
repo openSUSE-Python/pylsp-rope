@@ -95,6 +95,7 @@ CodeActionKind = Literal[
     "refactor.extract",
     "refactor.inline",
     "refactor.rewrite",
+    "refactor.move",
     "source",
     "source.organizeImports",
     "source.fixAll",
