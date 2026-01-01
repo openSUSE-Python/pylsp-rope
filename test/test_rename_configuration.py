@@ -63,7 +63,6 @@ class TestRenameConfigurationExamples:
             "pylsp": {
                 "plugins": {
                     "pylsp_rope": {"enabled": True, "rename": True},
-                    "rope_rename": {"enabled": False},
                     "jedi_rename": {"enabled": False},
                 }
             }

@@ -99,9 +99,6 @@ This document provides solutions to common issues with pylsp-rope.
            "enabled": true,
            "rename": true
          },
-         "rope_rename": {
-           "enabled": false
-         },
          "jedi_rename": {
            "enabled": false
          }
@@ -113,7 +110,6 @@ This document provides solutions to common issues with pylsp-rope.
 2. **Check for Conflicting Plugins:**
    Ensure only one rename plugin is enabled:
    - `pylsp_rope` (this plugin)
-   - `rope_rename` (built-in rope)
    - `jedi_rename` (built-in jedi)
 
 3. **Verify Active Plugin:**

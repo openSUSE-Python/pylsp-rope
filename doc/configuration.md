@@ -43,9 +43,6 @@ To enable pylsp-rope's rename functionality, add the following to your LSP confi
         "enabled": true,
         "rename": true
       },
-      "rope_rename": {
-        "enabled": false
-      },
       "jedi_rename": {
         "enabled": false
       }
@@ -61,7 +58,6 @@ To enable pylsp-rope's rename functionality, add the following to your LSP confi
 | Plugin | Identifier | Description | When to Use |
 |--------|------------|-------------|-------------|
 | **pylsp-rope** | `pylsp_rope` | This plugin's rename using Rope's refactoring engine | Complex cross-file refactoring, future module/package support |
-| **Built-in Rope** | `rope_rename` | Built-in python-lsp-server Rope rename | Basic variable/class/function renaming |
 | **Built-in Jedi** | `jedi_rename` | Built-in python-lsp-server Jedi rename | Simple renaming scenarios |
 
 ### Verification
@@ -118,9 +114,6 @@ require'lspconfig'.pylsp.setup{
           enabled = true,
           rename = true
         },
-        rope_rename = {
-          enabled = false
-        },
         jedi_rename = {
           enabled = false
         }
@@ -140,7 +133,6 @@ For VS Code with the Python LSP plugin, add to your `settings.json`:
   "pylsp.configurationSources": ["pycodestyle"],
   "pylsp.plugins.pylsp_rope.enabled": true,
   "pylsp.plugins.pylsp_rope.rename": true,
-  "pylsp.plugins.rope_rename.enabled": false,
   "pylsp.plugins.jedi_rename.enabled": false
 }
 ```
